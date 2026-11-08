@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-expensewise}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-expensewise}
+      POSTGRES_DB: ${POSTGRES_DB:-expensewise}
+    ports:
+      - "${POSTGRES_PORT:-5436}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-expensewise} -d ${POSTGRES_DB:-expensewise}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ai-engine:
+    build:
+      context: ./services/ai-engine
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${AI_ENGINE_PORT:-8000}:8000"
+    environment:
+      - PORT=8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  api:
+    build:
+      context: .
+      file: apps/api/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-4100}:4100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-engine:
+        condition: service_started
+    environment:
+      - NODE_ENV=production
+      - PORT=4100
+      - DATABASE_URL=postgres://${POSTGRES_USER:-expensewise}:${POSTGRES_PASSWORD:-expensewise}@postgres:5432/${POSTGRES_DB:-expensewise}
+      - PYTHON_ENGINE_URL=http://ai-engine:8000
+      - APP_URL=${APP_URL:-http://localhost:3100}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+
+  web:
+    build:
+      context: .
+      file: apps/web/Dockerfile
+      args:
+        API_INTERNAL_URL: http://api:4100
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3100}:3100"
+    depends_on:
+      - api
+    environment:
+      - NODE_ENV=production
+      - PORT=3100
+      - APP_URL=${APP_URL:-http://localhost:3100}
+      - API_INTERNAL_URL=http://api:4100
+
+volumes:
+  postgres_data:
+

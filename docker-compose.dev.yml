@@ -1,0 +1,30 @@
+# Entorno de desarrollo con recarga en caliente (Hot Reload)
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-expensewise}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-expensewise}
+      POSTGRES_DB: ${POSTGRES_DB:-expensewise}
+    ports:
+      - "${POSTGRES_PORT:-5436}:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+
+  ai-engine:
+    build:
+      context: ./services/ai-engine
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${AI_ENGINE_PORT:-8000}:8000"
+    volumes:
+      - ./services/ai-engine:/app
+    environment:
+      - PORT=8000
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+volumes:
+  postgres_dev_data:
+

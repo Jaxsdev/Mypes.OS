@@ -63,29 +63,36 @@ A diferencia de otras herramientas que delegan el registro contable a la IA, en 
 * **Suscripciones y Compromisos:** Detección de cambios de tarifa, calendario de vencimientos y recordatorios de pago.
 * **Patrimonio Neto:** Seguimiento histórico de activos fijos, pasivos/deudas, carteras de inversión y proyecciones de flujo de caja a 30, 60 y 90 días.
 
+### 🐍 5. Motor de Analítica Contable y Libros Electrónicos (Python FastAPI)
+* **Generación de Libros Electrónicos:** Registro de Ventas e Ingresos y Registro de Compras estructurados (formato PLE).
+* **Pronóstico Predictivo:** Modelado estadístico y series temporales con NumPy para calcular el flujo de caja proyectado y la liquidez de la empresa.
+
 ---
 
 ## 🛠️ Arquitectura y Tecnologías
 
-El proyecto está diseñado como un **Monorepo** moderno mediante `pnpm workspaces`:
+El proyecto está diseñado como una arquitectura híbrida de microservicios y monorepo:
 
 ```
 mypesos/
 ├── packages/
-│   └── core/          # Motor financiero puro en TypeScript (lógica de dinero, Zod, fechas, parseo de lenguaje natural e impuestos)
-└── apps/
-    ├── api/           # Backend API en NestJS 12 (ESM, Drizzle ORM, Better Auth, PostgreSQL)
-    ├── web/           # Frontend en Next.js 16 (React 19, Tailwind CSS v4, Base UI, Recharts)
-    └── desktop/       # Aplicación nativa de escritorio con Tauri 2 (Rust shell)
+│   └── core/          # Motor financiero puro en TypeScript (lógica contable, Zod, fechas, parseos e impuestos)
+├── apps/
+│   ├── api/           # Backend API en NestJS 12 (ESM, Drizzle ORM, Better Auth, PostgreSQL)
+│   ├── web/           # Frontend en Next.js 16 (React 19, Tailwind CSS v4, Base UI, Recharts)
+│   └── desktop/       # Aplicación nativa de escritorio con Tauri 2 (Rust shell)
+└── services/
+    └── ai-engine/     # Microservicio en Python (FastAPI, NumPy, Pydantic) para analítica contable y PLE
 ```
 
 | Capa | Tecnologías |
 | :--- | :--- |
 | **Frontend** | [Next.js 16](https://nextjs.org/) (App Router), [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), Base UI, Lucide Icons |
 | **Backend API** | [NestJS 12](https://nestjs.com/) (SWC, Express 5), [Better Auth](https://www.better-auth.com/) (2FA & Workspaces) |
+| **Microservicio Python** | [FastAPI](https://fastapi.tiangolo.com/), [NumPy](https://numpy.org/), Pydantic v2, Pytest |
 | **Base de Datos** | [PostgreSQL](https://www.postgresql.org/) con [Drizzle ORM](https://orm.drizzle.team/) |
 | **Motor Central** | TypeScript estricto, Zod, Vitest |
-| **Inteligencia Artificial** | Integración con Anthropic Claude SDK, modelos LLM y MCP Server |
+| **Inteligencia Artificial** | Modelos LLM, OCR de comprobantes fiscales y MCP Server |
 
 ---
 

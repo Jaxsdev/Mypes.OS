@@ -5,10 +5,16 @@ from typing import Optional, List, Dict, Any
 import datetime
 from extractors.invoice_parser import parse_invoice_text, ExtractedInvoice
 from analytics.cash_flow import calculate_cash_flow_forecast, CashFlowForecastRequest, ForecastResponse
+from reports.tax_books import (
+    generate_sales_book,
+    generate_purchases_book,
+    TaxBookTransaction,
+    TaxBookReportResponse
+)
 
 app = FastAPI(
     title="MypesOS AI & Analytics Engine",
-    description="Microservicio en Python para procesamiento inteligente de comprobantes fiscales, proyecciones de flujo de caja y análisis contable para MYPES.",
+    description="Microservicio en Python para procesamiento inteligente de comprobantes fiscales, proyecciones de flujo de caja y libros contables para MYPES.",
     version="0.1.0",
 )
 
@@ -28,6 +34,10 @@ class HealthResponse(BaseModel):
 
 class TextExtractionRequest(BaseModel):
     raw_text: str
+
+class TaxBookRequest(BaseModel):
+    period: str  # YYYYMM, e.g. "202611"
+    transactions: List[TaxBookTransaction]
 
 @app.get("/health", response_model=HealthResponse)
 def health_check():
@@ -55,3 +65,21 @@ def forecast_cash_flow(payload: CashFlowForecastRequest):
     if payload.horizon_days <= 0 or payload.horizon_days > 365:
         raise HTTPException(status_code=400, detail="El horizonte debe estar entre 1 y 365 días")
     return calculate_cash_flow_forecast(payload)
+
+@app.post("/api/v1/reports/sales-book", response_model=TaxBookReportResponse)
+def create_sales_book(payload: TaxBookRequest):
+    """
+    Genera el Registro de Ventas e Ingresos electrónico con cálculo de IGV para MYPES.
+    """
+    if not payload.period or len(payload.period) != 6:
+        raise HTTPException(status_code=400, detail="El periodo debe tener el formato YYYYMM (ej. 202611)")
+    return generate_sales_book(payload.period, payload.transactions)
+
+@app.post("/api/v1/reports/purchases-book", response_model=TaxBookReportResponse)
+def create_purchases_book(payload: TaxBookRequest):
+    """
+    Genera el Registro de Compras electrónico para deducción de crédito fiscal en MYPES.
+    """
+    if not payload.period or len(payload.period) != 6:
+        raise HTTPException(status_code=400, detail="El periodo debe tener el formato YYYYMM (ej. 202611)")
+    return generate_purchases_book(payload.period, payload.transactions)
