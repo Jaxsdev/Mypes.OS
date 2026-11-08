@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import datetime
 from extractors.invoice_parser import parse_invoice_text, ExtractedInvoice
+from analytics.cash_flow import calculate_cash_flow_forecast, CashFlowForecastRequest, ForecastResponse
 
 app = FastAPI(
     title="MypesOS AI & Analytics Engine",
@@ -45,3 +46,12 @@ def extract_from_text(payload: TextExtractionRequest):
     if not payload.raw_text.strip():
         raise HTTPException(status_code=400, detail="El texto proporcionado está vacío")
     return parse_invoice_text(payload.raw_text)
+
+@app.post("/api/v1/analytics/forecast", response_model=ForecastResponse)
+def forecast_cash_flow(payload: CashFlowForecastRequest):
+    """
+    Calcula predicciones de flujo de caja y tasa de consumo para MYPES a 30, 60 o 90 días.
+    """
+    if payload.horizon_days <= 0 or payload.horizon_days > 365:
+        raise HTTPException(status_code=400, detail="El horizonte debe estar entre 1 y 365 días")
+    return calculate_cash_flow_forecast(payload)
