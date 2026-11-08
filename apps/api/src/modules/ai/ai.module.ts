@@ -15,6 +15,7 @@ import { RoutingProvider } from "./gateway/router.provider.js";
 import { AI_PROVIDER, type AiProvider } from "./gateway/types.js";
 import { AiInboxService } from "./inbox/ai-inbox.service.js";
 import { narrativeWriter } from "./narrative.js";
+import { PythonEngineClient } from "./python-engine.client.js";
 import { AiRateLimiter, AiUsageService } from "./usage.service.js";
 
 /**
@@ -36,8 +37,9 @@ import { AiRateLimiter, AiUsageService } from "./usage.service.js";
     CaptureService,
     AiInboxService,
     DetectionService,
+    PythonEngineClient,
   ],
-  exports: [AI_PROVIDER, AiGateway, AiUsageService, CaptureService, AiInboxService, DetectionService],
+  exports: [AI_PROVIDER, AiGateway, AiUsageService, CaptureService, AiInboxService, DetectionService, PythonEngineClient],
 })
 export class AiModule implements OnModuleInit, OnModuleDestroy {
   constructor(
