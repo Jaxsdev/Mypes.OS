@@ -29,6 +29,7 @@ import { RateLimit } from "../system/rate-limit.js";
 import { CaptureService } from "./capture/capture.service.js";
 import { AiGateway } from "./gateway/ai.gateway.js";
 import { AiInboxService } from "./inbox/ai-inbox.service.js";
+import { PythonEngineClient } from "./python-engine.client.js";
 import { AiUsageService } from "./usage.service.js";
 
 const id = new ParseUUIDPipe();
@@ -144,11 +145,37 @@ export class AiController {
   constructor(
     @Inject(AiGateway) private readonly gateway: AiGateway,
     @Inject(AiUsageService) private readonly usage: AiUsageService,
+    @Inject(PythonEngineClient) private readonly pythonEngine: PythonEngineClient,
   ) {}
 
   @Get("status")
-  status(@Ctx() ctx: WorkspaceContext) {
-    return this.gateway.status(ctx);
+  async status(@Ctx() ctx: WorkspaceContext) {
+    const gatewayStatus = await this.gateway.status(ctx);
+    const pythonHealthy = await this.pythonEngine.checkHealth();
+    return {
+      ...gatewayStatus,
+      pythonEngine: {
+        available: pythonHealthy,
+      },
+    };
+  }
+
+  @Post("engine/extract")
+  extractWithPython(@Body("text") text: string) {
+    return this.pythonEngine.extractFromText(text || "");
+  }
+
+  @Post("engine/forecast")
+  forecastWithPython(
+    @Body("inflows") inflows: number[],
+    @Body("outflows") outflows: number[],
+    @Body("days") days?: number,
+  ) {
+    return this.pythonEngine.getForecast({
+      historyInflows: inflows || [],
+      historyOutflows: outflows || [],
+      horizonDays: days ?? 30,
+    });
   }
 
   @Get("usage")
