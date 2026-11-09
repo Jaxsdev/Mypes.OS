@@ -8,7 +8,6 @@
 
 <br/>
 
-[![Licencia AGPL v3](https://img.shields.io/badge/Licencia-AGPL--3.0-blue.svg?style=for-the-badge&logo=open-source-initiative&logoColor=white)](./LICENSE)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Jaxsdev%2FMypes.OS-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Jaxsdev/Mypes.OS)
 [![CI Pipeline](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/Jaxsdev/Mypes.OS/actions)
 [![Docker Ready](https://img.shields.io/badge/Docker-Self--Hosted-2496ed?style=for-the-badge&logo=docker&logoColor=white)](#-despliegue-con-docker)
