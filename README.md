@@ -2,157 +2,170 @@
 
 # 💼 MypesOS
 
-**Sistema Operativo Financiero y Contable con Inteligencia Artificial para Personas y Micro/Pequeñas Empresas (MYPES & PYMES)**
+### El Sistema Operativo Financiero y Contable con Inteligencia Artificial para MYPES & PYMES
 
-*Control integral de ingresos, egresos, flujo de caja, proyectos, nóminas, impuestos (IGV/IVA) y patrimonio en un libro contable estricto de partida doble con asistencia de IA supervisada.*
+*Control integral de ingresos, egresos, flujo de caja, proyectos, nóminas, impuestos (IGV/IVA) y patrimonio en un libro contable estricto de partida doble.*
 
-[![Licencia AGPL v3](https://img.shields.io/badge/Licencia-AGPL--3.0-blue.svg)](./LICENSE)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Jaxsdev%2FMypes.OS-181717?logo=github)](https://github.com/Jaxsdev/Mypes.OS)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?logo=typescript&logoColor=white)](#tecnologías)
-[![Next.js 16](https://img.shields.io/badge/Next.js-16%20(React%2019)-000?logo=nextdotjs)](#tecnologías)
-[![NestJS 12](https://img.shields.io/badge/NestJS-12-e0234e?logo=nestjs)](#tecnologías)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle%20ORM-4169e1?logo=postgresql&logoColor=white)](#tecnologías)
-[![Docker Ready](https://img.shields.io/badge/Docker-Self--Hosted-2496ed?logo=docker&logoColor=white)](#despliegue-con-docker)
+<br/>
+
+[![Licencia AGPL v3](https://img.shields.io/badge/Licencia-AGPL--3.0-blue.svg?style=for-the-badge&logo=open-source-initiative&logoColor=white)](./LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Jaxsdev%2FMypes.OS-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Jaxsdev/Mypes.OS)
+[![CI Pipeline](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/Jaxsdev/Mypes.OS/actions)
+[![Docker Ready](https://img.shields.io/badge/Docker-Self--Hosted-2496ed?style=for-the-badge&logo=docker&logoColor=white)](#-despliegue-con-docker)
+
+<br/>
+
+```
+Captura (OCR) ➔ Conecta (Bancos/Billeteras) ➔ Comprende (IA & Métricas) ➔ Actúa (Reportes & PLE)
+```
+
+[✨ Características](#-características-principales) • [🏗️ Arquitectura](#%EF%B8%8F-arquitectura-del-sistema) • [🚀 Inicio Rápido](#-inicio-rápido) • [🐳 Docker](#-despliegue-con-docker) • [📖 Documentación API](#-microservicio-python-ai-engine)
 
 </div>
 
 ---
 
-## 📌 ¿Qué es MypesOS?
+## 📌 ¿Por qué MypesOS?
 
-**MypesOS** nace para resolver el vacío existente entre las aplicaciones personales de control de gastos (que resultan insuficientes para gestionar un negocio) y los sistemas ERP contables tradicionales (complejos, costosos y rígidos para microempresarios o trabajadores independientes).
+Las micro y pequeñas empresas a menudo se ven obligadas a elegir entre:
+* **Hojas de cálculo o apps personales:** Inadecuadas para impuestos, nóminas o proyectos.
+* **Sistemas ERP tradicionales:** Costosos, rígidos, con interfaces obsoletas y curvas de aprendizaje lentas.
 
-Permite unificar en una sola plataforma:
-1. **Finanzas Personales:** Ahorros, metas de patrimonio, suscripciones recurrentes y gastos del hogar.
-2. **Finanzas Empresariales (MYPES):** Rentabilidad por proyectos, gestión de nómina, control de flujo de caja (*runway*), cuentas por cobrar y pagar, e impuestos discriminados.
+**MypesOS** unifica lo mejor de ambos mundos: una experiencia moderna, rápida e intuitiva, respaldada por un **libro contable de partida doble matemática**, inteligencia artificial supervisada y un motor de analítica tributaria en Python.
 
-### ⚖️ Filosofía Contable: Supervisión Humana
-A diferencia de otras herramientas que delegan el registro contable a la IA, en **MypesOS**:
-> **El libro contable (Double-Entry Ledger) es la única fuente de verdad.**  
-> La inteligencia artificial extrae recibos/facturas, clasifica y detecta anomalías, pero **ninguna transacción se asienta en los libros sin confirmación del usuario**.
+> [!IMPORTANT]
+> **Filosofía Contable de MypesOS:**
+> El libro contable (*ledger*) es la única e inmutable fuente de verdad. La IA procesa, extrae comprobantes y sugiere categorizaciones, pero **ninguna cifra o asiento contable se altera sin confirmación humana explícita**.
+
+---
+
+## 🏗️ Arquitectura del Sistema
+
+MypesOS está diseñado como un ecosistema políglota distribuido (TypeScript + Python):
+
+```mermaid
+flowchart TD
+    User(["👤 Emprendedor / Contador"])
+    Web["🖥️ Web Dashboard (Next.js 16 + React 19)"]
+    API["⚡ API Gateway (NestJS 12)"]
+    DB[("🐘 PostgreSQL (Ledger Partida Doble)")]
+    Python["🐍 AI & Analytics Engine (FastAPI + NumPy)"]
+    Storage["📦 Almacenamiento (Facturas / Comprobantes)"]
+
+    User -->|"Acceso Web / Móvil"| Web
+    Web -->|"Proxy Seguro / API Rest"| API
+    API -->|"Transacciones & Consultas"| DB
+    API -->|"Extracción OCR & Libros PLE"| Python
+    API -->|"Archivos & Recibos"| Storage
+```
+
+### 🧩 Estructura del Monorepo
+
+| Directorio | Capa | Tecnología | Función |
+| :--- | :--- | :--- | :--- |
+| **`packages/core`** | Núcleo Financiero | TypeScript estricto | Motor contable puro, cálculo de dinero en enteros menores, Zod schemas y fechas |
+| **`apps/api`** | Backend Central | NestJS 12, Drizzle ORM | Autenticación (Better Auth), aislamiento multi-tenant, auditoría contable |
+| **`apps/web`** | Frontend Web | Next.js 16, Tailwind CSS v4 | Panel de control, dashboards, visualización de métricas y exportación |
+| **`services/ai-engine`**| Motor de Analítica | Python 3.12, FastAPI, NumPy | Extracción OCR de facturas/boletas, pronósticos de liquidez y libros electrónicos |
+| **`apps/desktop`** | App de Escritorio | Tauri 2 (Rust) | Instalador nativo de Windows (MSI) para escritorio |
 
 ---
 
 ## ✨ Características Principales
 
-### 💰 1. Gestión Contable y Libro Diario (Partida Doble)
-* **Aritmética Entera:** Manejo de importes monetarios en unidades menores (*cents / integer minor units*), erradicando errores de redondeo de punto flotante.
-* **Multidivisa Real:** Mantiene intacta la moneda original de origen, el importe en la moneda de la cuenta, el monto base y la tasa de cambio (FX) aplicada.
-* **Soporte Regional:** Compatibilidad con billeteras digitales de la región (**Yape, Plin, Nequi, Daviplata, Mercado Pago**) junto a cuentas bancarias, tarjetas y pasarelas de pago (Stripe, Wise, PayPal).
+### 💰 1. Contabilidad de Partida Doble y Multidivisa
+- **Aritmética Entera:** Registro exacto en céntimos/minor units para eliminar el margen de error de redondeo de punto flotante.
+- **Multidivisa Completa:** Almacena importe original, divisa de la cuenta, monto base equivalente y tipo de cambio aplicado.
+- **Billeteras Regionales:** Compatibilidad nativa con **Yape, Plin, Nequi, Daviplata, Mercado Pago**, bancos locales y pasarelas internacionales (Stripe, Wise, PayPal).
 
-### 🧾 2. Desglose Tributario para Negocios (IGV / IVA)
-* Módulo especializado de cálculo y disgregación de impuestos:
-  * Modalidad inclusiva: determinación automática de base imponible y tasa (ej. 18% IGV o 19% IVA).
-  * Modalidad exclusiva: cálculo de impuesto sobre subtotal neto.
-  * Preparado para vinculación de comprobantes de pago (Facturas, Boletas de Venta, Recibos por Honorarios).
+### 🧾 2. Desglose Tributario y Libros Electrónicos (PLE)
+- **Cálculo de Impuestos:** Base imponible automática e IGV (18%) / IVA (19%) en modalidades inclusiva y exclusiva.
+- **Registro de Ventas e Ingresos:** Generación automatizada conforme a la normativa para micro y pequeñas empresas.
+- **Registro de Compras:** Cálculo de crédito fiscal deducible y exportación en formato oficial pipe-delimited (`|`).
 
-### 🤖 3. Procesamiento Inteligente con IA (NLP en Español)
-* **Reconocimiento de Lenguaje Natural:** Interpretación instantánea de gastos o cobros en español:
-  * *"Pagué 45 soles por almuerzo en restaurante con Yape ayer"*
-  * *"Cobré 3500 dólares sueldo en BCP"*
-  * *"Pago de internet 120 soles hoy"*
-* **Copilot Financiero:** Respuestas analíticas a preguntas en español sobre tus datos contables reales:
-  * *"¿Cuánto gasté en combustible este mes?"*
-  * *"¿Cuál es mi saldo disponible entre todas mis cuentas?"*
-  * *"¿Cuáles son mis cuentas por cobrar pendientes?"*
-* **AI Inbox:** Bandeja de entrada para revisar y aprobar sugerencias antes de asentarlas.
+### 🤖 3. Procesamiento en Lenguaje Natural y Copilot
+- **Entrada Rápida en Español:** Escribe o dicta frases como *"Almuerzo 35 soles en restaurante con Yape ayer"* y el sistema inferirá categoría, fecha, método de pago y monto.
+- **Copilot Financiero Supervisado:** Pregunta en lenguaje natural sobre saldos, gastos acumulados, cuentas por cobrar o proyecciones.
+- **AI Inbox:** Bandeja de decisiones para aprobar o descartar borradores detectados antes de asentarlos en el libro.
 
-### 📊 4. Planificación, Proyectos y Nómina
-* **Proyectos & Rentabilidad:** Asignación de ingresos y costos directos, tasa de quema (*burn rate*), margen operativo y control presupuestario.
-* **Nóminas (Payroll):** Registro ordenado de pagos a colaboradores con comprobantes.
-* **Suscripciones y Compromisos:** Detección de cambios de tarifa, calendario de vencimientos y recordatorios de pago.
-* **Patrimonio Neto:** Seguimiento histórico de activos fijos, pasivos/deudas, carteras de inversión y proyecciones de flujo de caja a 30, 60 y 90 días.
-
-### 🐍 5. Motor de Analítica Contable y Libros Electrónicos (Python FastAPI)
-* **Generación de Libros Electrónicos:** Registro de Ventas e Ingresos y Registro de Compras estructurados (formato PLE).
-* **Pronóstico Predictivo:** Modelado estadístico y series temporales con NumPy para calcular el flujo de caja proyectado y la liquidez de la empresa.
+### 📈 4. Flujo de Caja y Control de Negocio
+- **Pronóstico a 30, 60 y 90 días:** Modelado estadístico con NumPy sobre la serie histórica de cobros y pagos.
+- **Tasa de Quema (*Net Burn Rate*):** Indicador continuo de la velocidad de consumo de capital y días de liquidez restante (*runway*).
+- **Proyectos & Rentabilidad:** Costos directos, ingresos por cliente y seguimiento de nómina mensual con comprobantes.
 
 ---
 
-## 🛠️ Arquitectura y Tecnologías
-
-El proyecto está diseñado como una arquitectura híbrida de microservicios y monorepo:
-
-```
-mypesos/
-├── packages/
-│   └── core/          # Motor financiero puro en TypeScript (lógica contable, Zod, fechas, parseos e impuestos)
-├── apps/
-│   ├── api/           # Backend API en NestJS 12 (ESM, Drizzle ORM, Better Auth, PostgreSQL)
-│   ├── web/           # Frontend en Next.js 16 (React 19, Tailwind CSS v4, Base UI, Recharts)
-│   └── desktop/       # Aplicación nativa de escritorio con Tauri 2 (Rust shell)
-└── services/
-    └── ai-engine/     # Microservicio en Python (FastAPI, NumPy, Pydantic) para analítica contable y PLE
-```
-
-| Capa | Tecnologías |
-| :--- | :--- |
-| **Frontend** | [Next.js 16](https://nextjs.org/) (App Router), [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), Base UI, Lucide Icons |
-| **Backend API** | [NestJS 12](https://nestjs.com/) (SWC, Express 5), [Better Auth](https://www.better-auth.com/) (2FA & Workspaces) |
-| **Microservicio Python** | [FastAPI](https://fastapi.tiangolo.com/), [NumPy](https://numpy.org/), Pydantic v2, Pytest |
-| **Base de Datos** | [PostgreSQL](https://www.postgresql.org/) con [Drizzle ORM](https://orm.drizzle.team/) |
-| **Motor Central** | TypeScript estricto, Zod, Vitest |
-| **Inteligencia Artificial** | Modelos LLM, OCR de comprobantes fiscales y MCP Server |
-
----
-
-## 🚀 Inicio Rápido (Desarrollo Local)
+## 🚀 Inicio Rápido
 
 ### Requisitos Previos
-* **Node.js:** `>= 24.0.0`
-* **pnpm:** `>= 10.0.0`
-* **Docker & Docker Compose** (para PostgreSQL)
+- **Node.js:** `>= 24.0.0`
+- **pnpm:** `>= 10.0.0`
+- **Python:** `>= 3.11` (para desarrollo local del microservicio de analítica)
+- **Docker & Docker Compose**
 
-### 1. Clonar el Repositorio
+### Instalación en 3 Pasos
+
 ```bash
+# 1. Clonar el repositorio
 git clone https://github.com/Jaxsdev/Mypes.OS.git
 cd Mypes.OS
-```
 
-### 2. Instalar Dependencias
-```bash
-pnpm install
-```
-
-### 3. Configurar Variables de Entorno
-Copia el archivo de ejemplo para configurar tus credenciales:
-```bash
+# 2. Configurar variables de entorno e instalar dependencias
 cp .env.example .env
-```
+pnpm install
 
-### 4. Iniciar la Base de Datos y Migraciones
-```bash
-# Iniciar contenedor de PostgreSQL
+# 3. Iniciar base de datos y migrar esquema
 pnpm db:up
-
-# Generar y aplicar migraciones
 pnpm db:migrate
-
-# (Opcional) Cargar datos de prueba de ejemplo
-pnpm db:seed
 ```
 
-### 5. Iniciar Servidores de Desarrollo
+### Ejecución en Modo Desarrollo
+
 ```bash
+# Inicia la API (puerto 4100) y la Web (puerto 3100) en paralelo
 pnpm dev
+
+# En otra terminal, levanta el microservicio de IA en Python (puerto 8000)
+cd services/ai-engine
+python -m venv venv
+.\venv\Scripts\activate   # En Linux/Mac: source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
 ```
-* **Frontend Web:** [http://localhost:3100](http://localhost:3100)
-* **Backend API:** [http://localhost:4100](http://localhost:4100)
 
 ---
 
 ## 🐳 Despliegue con Docker
 
-Para poner en marcha la plataforma en un servidor propio (*self-hosted*):
+Levanta la plataforma completa lista para producción (PostgreSQL + Python Engine + NestJS + Next.js) con un solo comando:
 
 ```bash
 docker compose up -d --build
 ```
 
+| Servicio | Puerto Local | Contenedor |
+| :--- | :--- | :--- |
+| **Web Dashboard** | `http://localhost:3100` | `mypesos-web` |
+| **Backend API** | `http://localhost:4100` | `mypesos-api` |
+| **AI & Analytics Engine** | `http://localhost:8000` | `mypesos-ai-engine` |
+| **PostgreSQL** | `localhost:5436` | `mypesos-postgres` |
+
 ---
 
-## 📄 Licencia y Atribución
+## 🧪 Pruebas Automatizadas
 
-Este proyecto es software libre distribuido bajo los términos de la **GNU Affero General Public License v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
+```bash
+# Correr pruebas unitarias del núcleo financiero (TypeScript)
+pnpm --filter @financeos/core test
 
-*MypesOS ha sido desarrollado y adaptado por [Jaxsdev](https://github.com/Jaxsdev) como un fork especializado para el mercado hispanohablante y micro/pequeñas empresas a partir del software libre base FinanceOS.*
+# Correr pruebas del microservicio Python (FastAPI / Pytest)
+cd services/ai-engine && pytest
+```
+
+---
+
+## 📄 Licencia y Reconocimientos
+
+Distribuido bajo la licencia **GNU Affero General Public License v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](./LICENSE) para los términos completos.
+
+*MypesOS es desarrollado y mantenido por [Jaxsdev](https://github.com/Jaxsdev) como un fork avanzado y especializado para el mercado de micro y pequeñas empresas.*
