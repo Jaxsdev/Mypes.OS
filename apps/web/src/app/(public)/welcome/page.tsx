@@ -23,28 +23,28 @@ import { SiteSection } from "@/components/marketing/site-chrome";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "FinanceOS — personal and business money in one ledger",
+  title: "MypesOS — Sistema Operativo Financiero y Contable para MYPES",
   description:
-    "Capture receipts and screenshots, connect bKash, banks and apps, and ask in English or বাংলা. One clean ledger for your household and your company; AI does the typing, you stay in control.",
+    "Control de ingresos, gastos, Yape/Plin, flujo de caja, libros electrónicos PLE (SUNAT) y scoring crediticio alternativo para microfinanzas.",
 };
 
 const FEATURES: Array<{ icon: LucideIcon; title: string; body: string; tone: string }> = [
   {
     icon: Camera,
-    title: "Capture anything",
-    body: "Snap a receipt, forward an SMS, drop a bKash screenshot or a bank PDF. AI reads it into a draft; you confirm with one tap.",
+    title: "Captura de comprobantes",
+    body: "Escanea boletas, facturas o capturas de Yape y Plin. La IA extrae los montos y RUC para tu revisión con un solo clic.",
     tone: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
   },
   {
     icon: Bot,
-    title: "A copilot that does the work",
-    body: "Ask “how much on food last month?” or say “lunch 250 from bKash”. It answers from your ledger and prepares changes for you to confirm.",
+    title: "Copilot Financiero con IA",
+    body: "Pregunta “¿Cuánto gastamos en insumos este mes?” o escribe “Almuerzo 35 soles con Yape”. Respuestas instantáneas desde tu libro mayor.",
     tone: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   },
   {
     icon: BellRing,
-    title: "Bills and subscriptions",
-    body: "Rent, internet, Netflix, domains, loan installments: reminders before they're due, price changes spotted, paid in one tap.",
+    title: "Control de pagos y servicios",
+    body: "Luz, agua, internet, alquileres, cuotas de préstamos y SUNAT: recordatorios antes del vencimiento y control de caja.",
     tone: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   },
   {
@@ -105,24 +105,24 @@ const TRUST: Array<{ icon: LucideIcon; title: string; body: string }> = [
 
 const FAQ = [
   {
-    q: "Is there a free plan?",
-    a: "Yes. The Free plan covers a personal and a business workspace with unlimited transactions, receipts and a monthly allowance of AI credits. Upgrade only when you need more people, storage or AI.",
+    q: "¿Existe un plan gratuito para MYPES?",
+    a: "Sí. MypesOS ofrece gestión completa de ingresos, gastos, comprobantes y cuentas con un libro contable estricto de partida doble.",
   },
   {
-    q: "Do I have to connect my bank?",
-    a: "No. Most people start by typing or capturing: a screenshot of a bKash message or a photo of a receipt is enough. Connections and imports are there when you want them.",
+    q: "¿Es obligatorio conectar cuentas bancarias?",
+    a: "No. Puedes registrar movimientos fácilmente mediante captura de boletas, recibos de Yape/Plin o escribiendo en lenguaje natural.",
   },
   {
-    q: "Can I write in Bangla?",
-    a: "Yes. Capture and the copilot understand English, Bangla and Banglish: “gotokal bazar 1200 cash e” works.",
+    q: "¿Puedo ingresar transacciones en lenguaje natural?",
+    a: "Sí. El Copilot entiende frases como: “Almuerzo 35 soles en restaurante ayer con Yape” o “Venta de mercadería 150 soles con Plin hoy”.",
   },
   {
-    q: "What does the AI see?",
-    a: "Only what it needs for the task you asked for — a receipt you captured, or figures the copilot looks up for your question. You can turn AI off for a workspace at any time and keep using the app with its built-in parser and rules.",
+    q: "¿Cómo funciona la precalificación de microcrédito?",
+    a: "El motor analiza el flujo de caja real y la recurrencia de ventas de los últimos 90 días para estimar un score crediticio y capacidad de cuota mensual (DSCR).",
   },
   {
-    q: "Can my accountant see the books?",
-    a: "Invite them to your company workspace as a viewer: they see everything and can export, but can't change anything.",
+    q: "¿Puedo exportar los libros electrónicos para SUNAT?",
+    a: "Sí. MypesOS genera automáticamente el Registro de Ventas e Ingresos (PLE 14.1) y Registro de Compras (PLE 8.1) en formato pipe-delimited (|).",
   },
 ];
 
@@ -133,34 +133,34 @@ function ProductPreview() {
       <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-lg/5">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-xl border border-border p-3">
-            <p className="text-[11px] text-muted-foreground">Cash on hand</p>
-            <p className="font-semibold tabular-nums">৳1,24,850.00</p>
+            <p className="text-[11px] text-muted-foreground">Posición de caja</p>
+            <p className="font-semibold tabular-nums">S/ 26,610.00</p>
           </div>
           <div className="rounded-xl border border-border p-3">
-            <p className="text-[11px] text-muted-foreground">Spent this month</p>
-            <p className="font-semibold tabular-nums">৳38,410.00</p>
+            <p className="text-[11px] text-muted-foreground">Cobros del mes</p>
+            <p className="font-semibold tabular-nums">S/ 14,800.00</p>
           </div>
         </div>
         <div className="space-y-2 rounded-xl bg-muted/40 p-3">
-          <p className="ms-auto w-fit rounded-2xl rounded-br-md bg-primary px-3 py-1.5 text-xs text-primary-foreground">office rent 15000 bkash e dilam</p>
+          <p className="ms-auto w-fit rounded-2xl rounded-br-md bg-primary px-3 py-1.5 text-xs text-primary-foreground">Almuerzo 35 soles en restaurante con Yape hoy</p>
           <div className="rounded-xl border border-violet-500/30 bg-card p-2.5">
             <p className="flex items-center gap-1.5 text-xs font-medium">
-              <Sparkles className="size-3.5 text-violet-500" /> Record an expense
-              <span className="rounded-full bg-violet-500/10 px-1.5 text-[10px] font-normal text-violet-700 dark:text-violet-300">Not saved yet</span>
+              <Sparkles className="size-3.5 text-violet-500" /> Registro sugerido
+              <span className="rounded-full bg-violet-500/10 px-1.5 text-[10px] font-normal text-violet-700 dark:text-violet-300">Pendiente de confirmar</span>
             </p>
-            <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">৳15,000.00 · Office Rent · from bKash · today</p>
+            <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">S/ 35.00 · Alimentos · desde Yape · hoy</p>
             <div className="mt-2 flex gap-1.5">
               <span className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-0.5 text-[11px] text-primary-foreground">
-                <Check className="size-3" /> Confirm
+                <Check className="size-3" /> Confirmar
               </span>
-              <span className="rounded-md px-2 py-0.5 text-[11px] text-muted-foreground">Discard</span>
+              <span className="rounded-md px-2 py-0.5 text-[11px] text-muted-foreground">Descartar</span>
             </div>
           </div>
         </div>
         <div className="space-y-1.5">
           {[
-            ["Netflix renews in 3 days", "৳1,100.00"],
-            ["Internet bill due Friday", "৳1,500.00"],
+            ["Luz del Sur / Hidrandina vence viernes", "S/ 280.00"],
+            ["Alquiler mensual local comercial", "S/ 1,200.00"],
           ].map(([label, amount]) => (
             <div key={label} className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs">
               <span className="flex items-center gap-1.5">

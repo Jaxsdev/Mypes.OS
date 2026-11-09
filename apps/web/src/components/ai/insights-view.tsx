@@ -311,25 +311,27 @@ function Figure({ label, value, href }: { label: string; value: string; href: st
 
 /** Spend against the budget and the features behind it. */
 export function AiUsageSummary({ usage, status }: { usage: AiUsageReportView; status: AiStatusView | null }) {
-  const budget = usage.budget;
-  const pct = budget.percentUsed ?? 0;
+  const budget = usage?.budget ?? { percentUsed: 0, limitUsd: null };
+  const pct = budget?.percentUsed ?? 0;
+  const totals = usage?.totals ?? { costUsd: 0, providerCalls: 0, blocked: 0 };
+  const byFeature = usage?.byFeature ?? [];
   return (
     <div className="space-y-3">
       <div className="space-y-1.5">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-2xl font-semibold tabular-nums">{usd(usage.totals.costUsd, 2)}</span>
-          <span className="text-xs text-muted-foreground">{budget.limitUsd === null ? "no monthly limit" : `of ${usd(budget.limitUsd, 2)} budget`}</span>
+          <span className="text-2xl font-semibold tabular-nums">{usd(totals.costUsd, 2)}</span>
+          <span className="text-xs text-muted-foreground">{budget.limitUsd === null ? "sin límite mensual" : `de ${usd(budget.limitUsd, 2)} presupuesto`}</span>
         </div>
         {budget.limitUsd !== null && <ProgressBar value={pct} tone={pct >= 90 ? "danger" : pct >= 70 ? "warn" : "default"} />}
         <p className="text-xs text-muted-foreground">
-          {usage.totals.providerCalls} model call{usage.totals.providerCalls === 1 ? "" : "s"}
-          {usage.totals.blocked > 0 && ` · ${usage.totals.blocked} skipped (AI off or budget)`}
+          {totals.providerCalls} consultas al modelo
+          {totals.blocked > 0 && ` · ${totals.blocked} omitidas`}
           {status?.model && ` · ${status.model}`}
         </p>
       </div>
-      {usage.byFeature.length > 0 && (
+      {byFeature.length > 0 && (
         <ul className="space-y-1 text-sm">
-          {usage.byFeature.slice(0, 4).map((row) => (
+          {byFeature.slice(0, 4).map((row) => (
             <li key={row.feature} className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-1.5 truncate">
                 <Sparkles className="size-3.5 text-violet-500" />

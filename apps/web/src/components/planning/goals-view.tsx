@@ -234,13 +234,14 @@ export function GoalsView({ list, variant, details = [] }: { list: GoalList; var
   const [creating, setCreating] = useState(false);
   const [adding, setAdding] = useState<GoalView | null>(null);
   const defaultKind: GoalKind = variant === "dream" ? "dream_asset" : "savings";
-  const active = list.items.filter((g) => g.status === "active" || g.status === "paused");
-  const done = list.items.filter((g) => g.status === "achieved");
-  const archived = list.items.filter((g) => g.status === "archived");
+  const items = list?.items ?? [];
+  const active = items.filter((g) => g.status === "active" || g.status === "paused");
+  const done = items.filter((g) => g.status === "achieved");
+  const archived = items.filter((g) => g.status === "archived");
 
   const create = <GoalFormDialog open={creating} onOpenChange={setCreating} defaultKind={defaultKind} onSaved={(id) => router.push(`/goals/${id}`)} />;
 
-  if (list.total === 0) {
+  if ((list?.total ?? 0) === 0 || items.length === 0) {
     const copy =
       variant === "dream"
         ? {
@@ -282,17 +283,19 @@ export function GoalsView({ list, variant, details = [] }: { list: GoalList; var
     );
   }
 
+  const summary = list?.summary ?? { active: 0, achieved: 0, targetBase: 0, currentBase: 0 };
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard icon={Target} label="Active" value={list.summary.active} hint={`${list.total} in total`} />
+        <StatCard icon={Target} label="Active" value={summary.active} hint={`${list?.total ?? items.length} in total`} />
         <StatCard
           icon={PiggyBank}
           label="Saved"
-          value={money(list.summary.currentBase)}
+          value={money(summary.currentBase ?? 0)}
           hint={
-            list.summary.targetBase
-              ? `${Math.round((list.summary.currentBase / list.summary.targetBase) * 100)}% of ${money(list.summary.targetBase)}`
+            summary.targetBase
+              ? `${Math.round(((summary.currentBase ?? 0) / summary.targetBase) * 100)}% of ${money(summary.targetBase)}`
               : "Across active goals"
           }
         />

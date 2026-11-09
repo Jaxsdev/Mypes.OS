@@ -2,6 +2,8 @@ import { type PeriodPreset, presetRange, today } from "@financeos/core";
 import { Suspense } from "react";
 import { PageShell } from "@/components/app/page-shell";
 import { CashFlowView, ReportsTabs, SavedReports, SummaryView } from "@/components/reports/reports-view";
+import { TaxBooksView } from "@/components/reports/tax-books-view";
+import { CreditScoreView } from "@/components/reports/credit-score-view";
 import type { CashFlow, CashFlowPoint, CategoryShare, Compare, Merchant, MonthPoint, ReportSummary } from "@/components/reports/types";
 import { api } from "@/lib/api/server";
 import type { CurrentWorkspace } from "@/lib/api/types";
@@ -15,7 +17,11 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   const query = { from: range.from, to: range.to };
 
   let body: React.ReactNode;
-  if (tab === "cash-flow") {
+  if (tab === "credit-score") {
+    body = <CreditScoreView />;
+  } else if (tab === "tax-books") {
+    body = <TaxBooksView />;
+  } else if (tab === "cash-flow") {
     const [flow, series] = await Promise.all([
       api<CashFlow>("/analytics/cash-flow", { query }),
       api<CashFlowPoint[]>("/analytics/cash-flow/series", { query: { months: 12 } }),

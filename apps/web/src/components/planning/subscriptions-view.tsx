@@ -109,8 +109,8 @@ export function SubscriptionsView({
     );
   }
 
-  const unconvertedNote = (items: Array<{ currency: string; amount: number }>) =>
-    items.length ? ` + ${items.map((u) => money(u.amount, u.currency)).join(" + ")}` : "";
+  const unconvertedNote = (items?: Array<{ currency: string; amount: number }>) =>
+    items?.length ? ` + ${items.map((u) => money(u.amount, u.currency)).join(" + ")}` : "";
 
   return (
     <div className={cn("space-y-4 transition-opacity", pending && "opacity-70")}>
@@ -144,10 +144,10 @@ export function SubscriptionsView({
         />
       </div>
 
-      {analytics.unconverted.length > 0 && (
+      {Boolean(analytics?.unconverted?.length) && (
         <div className="flex flex-wrap gap-2">
           <Pill icon={CircleAlert} tone="warn" href="/settings/currency">
-            {analytics.unconverted.length} in {[...new Set(analytics.unconverted.map((u) => u.currency))].join(", ")} not in the totals — add an exchange rate
+            {analytics.unconverted?.length} in {[...new Set(analytics.unconverted?.map((u) => u.currency) ?? [])].join(", ")} not in the totals — add an exchange rate
           </Pill>
         </div>
       )}
@@ -227,7 +227,7 @@ export function SubscriptionsView({
           {
             key: "category",
             label: "By category",
-            rows: analytics.byCategory.map((g) => ({
+            rows: (analytics.byCategory ?? []).map((g) => ({
               key: g.categoryId ?? "none",
               label: g.categoryName ?? "Uncategorized",
               count: g.count,
@@ -240,7 +240,7 @@ export function SubscriptionsView({
                 {
                   key: "project",
                   label: "By project",
-                  rows: analytics.byProject.map((g) => ({
+                  rows: (analytics.byProject ?? []).map((g) => ({
                     key: g.projectId ?? "none",
                     label: g.projectName ?? "No project",
                     count: g.count,

@@ -19,9 +19,11 @@ import { toast } from "@/lib/toast";
 import type { CashFlow, CashFlowPoint, CategoryShare, Compare, Merchant, MonthPoint, ReportSummary } from "./types";
 
 export const TABS = [
-  { value: "summary", label: "Summary" },
-  { value: "cash-flow", label: "Cash flow" },
-  { value: "saved", label: "AI reports" },
+  { value: "summary", label: "Resumen" },
+  { value: "cash-flow", label: "Flujo de caja" },
+  { value: "credit-score", label: "Score Crediticio MYPE" },
+  { value: "tax-books", label: "Libros Electrónicos (PLE)" },
+  { value: "saved", label: "Reportes IA" },
 ] as const;
 
 export const PERIODS = [

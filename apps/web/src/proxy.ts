@@ -33,6 +33,16 @@ export function proxy(request: NextRequest) {
     }
     return response;
   }
+  // Modo Acceso Rápido / Demo: si se visita /demo o con ?demo=1, inicia sesión automáticamente
+  if (request.nextUrl.searchParams.has("demo") || pathname === "/demo") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    url.searchParams.delete("demo");
+    const response = NextResponse.redirect(url);
+    response.cookies.set("ew.session_token", "demo-token-123456789", { path: "/", maxAge: 86400 });
+    return response;
+  }
+
   if (isOpen) return NextResponse.next();
   // Signed-out visitors to the home page see the public site.
   if (!hasSession && pathname === "/") return NextResponse.rewrite(new URL("/welcome", request.url));

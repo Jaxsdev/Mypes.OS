@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   ArrowDownLeft,
   ArrowUpRight,
+  Award,
   Camera,
   CircleAlert,
   Flame,
@@ -15,6 +16,7 @@ import {
   Plug,
   Repeat,
   Scale,
+  ShieldCheck,
   Sparkles,
   Tags,
   Target,
@@ -26,6 +28,7 @@ import { useApp } from "@/components/app/app-context";
 import { CategoryTile, Delta, EmptyNote, Pill, ProgressBar, Section, StatCard, StatusBadge } from "@/components/app/blocks";
 import { openAddTransaction } from "@/components/app/global-actions";
 import { BarsChart, SERIES } from "@/components/charts/charts";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Account, CurrentWorkspace, Me, TransactionPage } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
@@ -97,63 +100,87 @@ export function OverviewView({
             <Sparkles className="size-5" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-medium">Start with one transaction</p>
+            <p className="font-medium">Comienza registrando tu primer movimiento</p>
             <p className="text-sm text-muted-foreground">
-              Scan a bKash or bank screenshot, type “আজকে ৫০০ টাকার বাজার”, import a CSV statement, or connect{" "}
-              {isBusiness ? "Stripe or your own app" : "a bank feed"}.
+              Escanea una boleta, factura o comprobante de Yape/Plin, escribe &quot;Almuerzo 35 soles en restaurante con Yape ayer&quot;, importa un extracto bancario en CSV, o conecta tus cuentas comerciales.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" render={<Link href="/accounts" />} variant="outline">
-              <Wallet className="size-3.5" /> Add accounts
+              <Wallet className="size-3.5" /> Agregar cuentas
             </Button>
             <Button size="sm" render={<Link href="/integrations" />}>
-              <Plug className="size-3.5" /> Connect an app
+              <Plug className="size-3.5" /> Conectar integración
             </Button>
           </div>
         </div>
       )}
 
+      {/* Banner de Diagnóstico y Salud Crediticia MYPE (Cajathon / Microfinanzas) */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-primary/20 bg-primary/5">
+        <div className="flex items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <ShieldCheck className="size-5" />
+          </span>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-sm sm:text-base text-foreground">
+                Salud Financiera & Precalificación Microcrediticia MYPE
+              </span>
+              <Badge variant="outline" className="text-xs bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-bold">
+                Caja Trujillo Ready
+              </Badge>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+              Evaluación automatizada de riesgo crediticio alternativo basado en flujo de caja real, volatilidad y liquidez operativa.
+            </p>
+          </div>
+        </div>
+        <Button size="sm" render={<Link href="/reports?tab=credit-score" />} className="shrink-0 gap-1.5">
+          <Award className="size-3.5" /> Ver Scoring & Simular Crédito
+        </Button>
+      </div>
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <StatCard
           icon={Scale}
-          label="Net worth"
+          label="Patrimonio neto"
           value={overview?.netWorth ? compact(overview.netWorth.value) : "—"}
           hint={
             overview?.netWorth ? (
               <span className="inline-flex items-center gap-1.5">
-                <Delta value={overview.netWorth.changePct} /> vs last month
-                {!overview.netWorth.complete && <CircleAlert className="size-3 text-amber-500" aria-label="Incomplete" />}
+                <Delta value={overview.netWorth.changePct} /> vs mes anterior
+                {!overview.netWorth.complete && <CircleAlert className="size-3 text-amber-500" aria-label="Incompleto" />}
               </span>
             ) : (
-              "Add assets and debts to see it"
+              "Agrega activos y deudas para calcularlo"
             )
           }
           href="/wealth/net-worth"
         />
-        <StatCard icon={Wallet} label="Cash position" value={compact(cash)} hint={`${accounts.length} accounts`} href="/accounts" tone="good" />
+        <StatCard icon={Wallet} label="Posición de caja" value={compact(cash)} hint={`${accounts.length} cuentas activas`} href="/accounts" tone="good" />
         <StatCard
           icon={ArrowDownLeft}
-          label={isBusiness ? "Revenue this month" : "Income this month"}
+          label={isBusiness ? "Cobros del mes (Ventas)" : "Ingresos del mes"}
           value={compact(income)}
           hint={<Delta value={overview?.month.incomeChangePct} />}
           href={monthHref("income")}
         />
         <StatCard
           icon={ArrowUpRight}
-          label="Spent this month"
+          label="Gastos del mes"
           value={compact(expenses)}
           hint={<Delta value={overview?.month.expenseChangePct} goodWhen="down" />}
           href={monthHref("expense")}
         />
         <StatCard
           icon={TrendingUp}
-          label="Net cash flow"
+          label="Flujo de caja neto"
           value={formatMoney(net, workspace.baseCurrency, { locale, compact: true, signed: true })}
           hint={
             overview?.month.savingsRate !== null && overview?.month.savingsRate !== undefined
-              ? `${overview.month.savingsRate}% ${isBusiness ? "margin" : "saved"}`
-              : "This month"
+              ? `${overview.month.savingsRate}% ${isBusiness ? "margen operativo" : "ahorrado"}`
+              : "Este mes"
           }
           tone={net < 0 ? "danger" : "default"}
           href="/reports?tab=cash-flow"
@@ -161,18 +188,18 @@ export function OverviewView({
         {isBusiness ? (
           <StatCard
             icon={Flame}
-            label="Monthly burn"
+            label="Gasto operativo mensual"
             value={overview?.business ? compact(overview.business.burn) : "—"}
-            hint="Average of 3 months"
+            hint="Promedio trimestral"
             href="/business/projects"
             tone="warn"
           />
         ) : (
           <StatCard
             icon={HandCoins}
-            label="Owed to you"
+            label="Cuentas por cobrar"
             value={overview ? compact(overview.receivables.outstanding) : "—"}
-            hint={overview?.receivables.overdue ? `${compact(overview.receivables.overdue)} overdue` : "Receivables"}
+            hint={overview?.receivables.overdue ? `${compact(overview.receivables.overdue)} vencidas` : "Por cobrar"}
             href="/wealth/receivables"
             tone={overview?.receivables.overdue ? "warn" : "default"}
           />
@@ -423,7 +450,7 @@ export function OverviewView({
         </Section>
 
         <Section title="AI insights" hint="From your own numbers" href="/ai/insights">
-          {overview?.insights.length ? (
+          {overview?.insights?.length ? (
             <ul className="space-y-2">
               {overview.insights.map((insight) => (
                 <li key={insight.id} className="flex gap-2.5 rounded-lg bg-muted/40 px-3 py-2">

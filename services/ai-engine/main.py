@@ -5,6 +5,14 @@ from typing import Optional, List, Dict, Any
 import datetime
 from extractors.invoice_parser import parse_invoice_text, ExtractedInvoice
 from analytics.cash_flow import calculate_cash_flow_forecast, CashFlowForecastRequest, ForecastResponse
+from analytics.credit_scoring import (
+    calculate_mype_credit_score,
+    simulate_mype_loan,
+    CreditScoringRequest,
+    CreditScoringResponse,
+    LoanSimulationRequest,
+    LoanSimulationResponse
+)
 from reports.tax_books import (
     generate_sales_book,
     generate_purchases_book,
@@ -83,3 +91,22 @@ def create_purchases_book(payload: TaxBookRequest):
     if not payload.period or len(payload.period) != 6:
         raise HTTPException(status_code=400, detail="El periodo debe tener el formato YYYYMM (ej. 202611)")
     return generate_purchases_book(payload.period, payload.transactions)
+
+@app.post("/api/v1/analytics/credit-score", response_model=CreditScoringResponse)
+def evaluate_credit_score(payload: CreditScoringRequest):
+    """
+    Evalúa la salud crediticia alternativa y precalificación para microfinanzas (MYPES).
+    """
+    return calculate_mype_credit_score(payload)
+
+@app.post("/api/v1/analytics/loan-simulation", response_model=LoanSimulationResponse)
+def simulate_loan(payload: LoanSimulationRequest):
+    """
+    Simula cuota de microcrédito y evalúa la capacidad de servicio de deuda (DSCR) contra el flujo libre.
+    """
+    if payload.requested_amount <= 0:
+        raise HTTPException(status_code=400, detail="El monto solicitado debe ser mayor a cero")
+    if payload.term_months <= 0 or payload.term_months > 60:
+        raise HTTPException(status_code=400, detail="El plazo debe estar entre 1 y 60 meses")
+    return simulate_mype_loan(payload)
+

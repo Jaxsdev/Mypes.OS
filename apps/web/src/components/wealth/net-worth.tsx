@@ -65,15 +65,17 @@ function Row({
 export function NetWorthView({ current, history }: { current: NetWorthCurrent; history: NetWorthHistory }) {
   const { money, locale, canWrite } = useApp();
   const [showAll, setShowAll] = useState(false);
-  const { assets, liabilities, components } = current;
-  const compact = (v: number) => formatMoney(v, current.currency, { locale, compact: true });
+  const assets = current?.assets ?? { cash: 0, investments: 0, assets: 0, receivables: 0, total: 0 };
+  const liabilities = current?.liabilities ?? { accounts: 0, debts: 0, total: 0, byKind: {} };
+  const components = current?.components ?? { accounts: [], assets: [], investments: [], receivables: [], liabilities: [] };
+  const compact = (v: number) => formatMoney(v, current?.currency ?? "PEN", { locale, compact: true });
 
   const empty =
-    !components.accounts.some((a) => a.balance !== 0) &&
-    !components.assets.length &&
-    !components.investments.length &&
-    !components.receivables.length &&
-    !components.liabilities.length;
+    !(components.accounts ?? []).some((a) => a.balance !== 0) &&
+    !(components.assets ?? []).length &&
+    !(components.investments ?? []).length &&
+    !(components.receivables ?? []).length &&
+    !(components.liabilities ?? []).length;
 
   if (empty) {
     return (
@@ -100,13 +102,15 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
     );
   }
 
-  const blocking = current.warnings.filter((w) => w.code === "missing_rate" || w.code === "no_valuation");
-  const advisory = current.warnings.filter((w) => w.code !== "missing_rate" && w.code !== "no_valuation");
-  const incompleteMonths = history.points.filter((p) => !p.complete).length;
-  const ownTotal = Math.max(1, assets.total);
-  const oweTotal = Math.max(1, liabilities.total);
-  const accountsWithDebt = components.accounts.filter((a) => (a.baseBalance ?? 0) < 0);
-  const shown = showAll ? current.warnings : current.warnings.slice(0, 4);
+  const warnings = current?.warnings ?? [];
+  const points = history?.points ?? [];
+  const blocking = warnings.filter((w) => w.code === "missing_rate" || w.code === "no_valuation");
+  const advisory = warnings.filter((w) => w.code !== "missing_rate" && w.code !== "no_valuation");
+  const incompleteMonths = points.filter((p) => !p.complete).length;
+  const ownTotal = Math.max(1, assets.total ?? 0);
+  const oweTotal = Math.max(1, liabilities.total ?? 0);
+  const accountsWithDebt = (components.accounts ?? []).filter((a) => (a.baseBalance ?? 0) < 0);
+  const shown = showAll ? warnings : warnings.slice(0, 4);
 
   return (
     <div className="space-y-4">
@@ -128,14 +132,14 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
             <p className={cn("mt-1 text-3xl font-semibold tabular-nums", current.netWorth < 0 && "text-red-600 dark:text-red-400")}>
               {money(current.netWorth)}
             </p>
-            {current.change !== null && current.previous !== null ? (
+            {current?.change !== null && current?.previous !== null ? (
               <p className="mt-1 flex flex-wrap items-center gap-2 text-sm">
-                <span className={cn("tabular-nums", current.change > 0 ? "text-money-in" : current.change < 0 && "text-red-600 dark:text-red-400")}>
-                  {money(current.change, undefined, { signed: true })}
+                <span className={cn("tabular-nums", (current?.change ?? 0) > 0 ? "text-money-in" : (current?.change ?? 0) < 0 && "text-red-600 dark:text-red-400")}>
+                  {money(current?.change ?? 0, undefined, { signed: true })}
                 </span>
-                <Delta value={current.changePercent} />
+                <Delta value={current?.changePercent ?? 0} />
                 <span className="text-xs text-muted-foreground">
-                  since {formatMonth(current.previousMonth.month)} ({money(current.previous)})
+                  since {formatMonth(current?.previousMonth?.month ?? "2026-10")} ({money(current?.previous ?? 0)})
                 </span>
               </p>
             ) : (
@@ -164,7 +168,7 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
           hint={`Month-end values, last ${history.points.length} months${incompleteMonths ? ` · ${incompleteMonths} incomplete` : ""}`}
         >
           <TrendChart
-            data={history.points.map((p) => ({
+            data={(history?.points ?? []).map((p) => ({
               label: p.month,
               netWorth: p.netWorth,
             }))}
@@ -179,7 +183,7 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
         </Section>
       </div>
 
-      {current.warnings.length > 0 && (
+      {(current?.warnings ?? []).length > 0 && (
         <section
           className={cn("space-y-2 rounded-xl border p-4", blocking.length ? "border-amber-500/30 bg-amber-500/5" : "border-border bg-card")}
           aria-label="What is missing"
@@ -206,9 +210,9 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
               );
             })}
           </ul>
-          {current.warnings.length > 4 && (
+          {(current?.warnings ?? []).length > 4 && (
             <button type="button" className="text-xs text-muted-foreground hover:text-foreground" onClick={() => setShowAll((v) => !v)}>
-              {showAll ? "Show fewer" : `Show all ${current.warnings.length}`}
+              {showAll ? "Show fewer" : `Show all ${current?.warnings?.length ?? 0}`}
             </button>
           )}
         </section>
@@ -222,7 +226,7 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
               label="Cash in accounts"
               value={money(assets.cash)}
               share={(assets.cash / ownTotal) * 100}
-              hint={`${components.accounts.length} accounts`}
+              hint={`${components.accounts?.length ?? 0} accounts`}
               tone="good"
             />
             <Row
@@ -230,7 +234,7 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
               label="Investments"
               value={money(assets.investments)}
               share={(assets.investments / ownTotal) * 100}
-              hint={`${components.investments.length} holdings`}
+              hint={`${components.investments?.length ?? 0} holdings`}
               tone="good"
             />
             <Row
@@ -238,7 +242,7 @@ export function NetWorthView({ current, history }: { current: NetWorthCurrent; h
               label="Assets"
               value={money(assets.assets)}
               share={(assets.assets / ownTotal) * 100}
-              hint={`${components.assets.length} items`}
+              hint={`${components.assets?.length ?? 0} items`}
               tone="good"
             />
             <Row

@@ -12,8 +12,11 @@ import { AnalyticsController, ReportsController } from "./analytics.controller.j
 import { AnalyticsService } from "./analytics.service.js";
 import { OverviewService } from "./overview.service.js";
 import { ReportsService } from "./reports.service.js";
+import { TaxBooksService } from "./tax-books.service.js";
+import { CreditScoringService } from "./credit-scoring.service.js";
+import { PythonEngineClient } from "../ai/python-engine.client.js";
 
-const services = [AnalyticsService, OverviewService, ReportsService];
+const services = [AnalyticsService, OverviewService, ReportsService, TaxBooksService, CreditScoringService, PythonEngineClient];
 
 /** Read models: dashboard, cash flow, forecasts, reports. */
 @Module({

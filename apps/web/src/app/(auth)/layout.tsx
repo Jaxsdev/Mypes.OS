@@ -8,11 +8,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Wallet className="size-5" />
         </span>
-        <span className="text-lg font-semibold tracking-tight">FinanceOS</span>
+        <span className="text-lg font-semibold tracking-tight">MypesOS</span>
       </div>
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-xs/5">{children}</div>
       <p className="mt-6 max-w-sm text-center text-xs text-muted-foreground">
-        Personal and business money in one place. Your ledger stays yours: AI suggests, you confirm.
+        El sistema operativo financiero y contable con IA para la micro y pequeña empresa peruana.
       </p>
     </div>
   );

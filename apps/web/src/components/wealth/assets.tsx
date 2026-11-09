@@ -45,7 +45,9 @@ export function AssetsView({ list, status }: { list: AssetList; status: string }
   const [valuing, setValuing] = useState<Asset | null>(null);
   const [selling, setSelling] = useState<Asset | null>(null);
   const openCreate = useCallback(() => setCreating(true), []);
-  const { totals } = list;
+  const totals = list?.totals ?? { currentValue: 0, purchasePrice: 0, gain: 0, realizedGain: 0, count: 0, byKind: [] };
+  const items = list?.items ?? [];
+  const unconvertible = list?.unconvertible ?? [];
 
   const dialogs = (
     <>
@@ -81,7 +83,7 @@ export function AssetsView({ list, status }: { list: AssetList; status: string }
     />
   );
 
-  if (list.items.length === 0 && status === "owned") {
+  if (items.length === 0 && status === "owned") {
     return (
       <>
         {tabs}

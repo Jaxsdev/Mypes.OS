@@ -43,52 +43,53 @@ function Money({ value, href, className }: { value: number; href?: string; class
 function ProjectCard({ row }: { row: ProjectOverviewRow }) {
   const { money } = useApp();
   const { project, actual, estimated } = row;
-  const net = actual.netContribution;
-  const utilization = actual.budget?.utilization ?? null;
+  const net = actual?.netContribution?.amount ?? actual?.netContribution ?? 0;
+  const utilization = actual?.budget?.utilization ?? null;
+  const runwayMonths = estimated?.runwayMonths ?? null;
   return (
     <Link
-      href={`/business/projects/${project.id}`}
+      href={`/business/projects/${project?.id ?? ""}`}
       className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/20 hover:bg-accent/30"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium">{project.name}</p>
+          <p className="truncate text-sm font-medium">{project?.name ?? "Proyecto MYPE"}</p>
           <p className="truncate text-xs text-muted-foreground">
-            {[project.code, project.isDefault ? "Default project" : null].filter(Boolean).join(" · ") || " "}
+            {[project?.code, project?.isDefault ? "Proyecto Principal" : null].filter(Boolean).join(" · ") || " "}
           </p>
         </div>
-        {project.status !== "active" && <StatusBadge status={project.status === "completed" ? "paid" : "paused"} label={STATUS_LABELS[project.status]} />}
+        {project?.status && project.status !== "active" && <StatusBadge status={project.status === "completed" ? "paid" : "paused"} label={STATUS_LABELS[project.status]} />}
       </div>
       <div className="grid grid-cols-3 gap-2 text-sm">
         <div className="min-w-0">
-          <p className="text-[11px] text-muted-foreground">Revenue</p>
-          <Money value={actual.revenue.amount} className="text-money-in" />
+          <p className="text-[11px] text-muted-foreground">Ingresos</p>
+          <Money value={actual?.revenue?.amount ?? 0} className="text-money-in" />
         </div>
         <div className="min-w-0">
-          <p className="text-[11px] text-muted-foreground">Cost</p>
-          <Money value={actual.cost.amount} />
+          <p className="text-[11px] text-muted-foreground">Costos</p>
+          <Money value={actual?.cost?.amount ?? 0} />
         </div>
         <div className="min-w-0">
-          <p className="text-[11px] text-muted-foreground">Net</p>
-          <span className={cn("tabular-nums", net < 0 && "text-red-600 dark:text-red-400")}>{money(net, undefined, { signed: true })}</span>
+          <p className="text-[11px] text-muted-foreground">Neto</p>
+          <span className={cn("tabular-nums", Number(net) < 0 && "text-red-600 dark:text-red-400")}>{money(Number(net), undefined, { signed: true })}</span>
         </div>
       </div>
-      {actual.budget && (
+      {actual?.budget && (
         <div className="space-y-1">
           <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Budget {money(actual.budget.amount, undefined, { compact: true })}</span>
-            <span className="tabular-nums">{percentText(utilization)} used</span>
+            <span className="text-muted-foreground">Presupuesto {money(actual.budget.amount, undefined, { compact: true })}</span>
+            <span className="tabular-nums">{percentText(utilization)} usado</span>
           </div>
           <ProgressBar value={utilization ?? 0} tone={(utilization ?? 0) > 100 ? "danger" : (utilization ?? 0) > 80 ? "warn" : "good"} />
         </div>
       )}
       <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1">
-          <Flame className="size-3" /> {money(actual.monthlyBurn)}/mo burn
-          {estimated.runwayMonths !== null && (
+          <Flame className="size-3" /> {money(actual?.monthlyBurn ?? 0)}/mes gasto
+          {runwayMonths !== null && (
             <>
               {" · "}
-              <Hourglass className="size-3" /> ~{estimated.runwayMonths} mo left
+              <Hourglass className="size-3" /> ~{runwayMonths} meses de liquidez
             </>
           )}
         </span>
@@ -103,9 +104,10 @@ function ProjectCard({ row }: { row: ProjectOverviewRow }) {
 export function ProjectsView({ overview, preset }: { overview: ProjectOverview; preset: string }) {
   const { money, canWrite } = useApp();
   const [creating, setCreating] = useState(false);
-  const { totals } = overview;
+  const totals = overview?.totals ?? { revenue: 0, cost: 0, net: 0, budget: 0 };
+  const projects = overview?.projects ?? [];
 
-  if (overview.projects.length === 0) {
+  if (projects.length === 0) {
     return (
       <>
         <EmptyState
@@ -146,10 +148,10 @@ export function ProjectsView({ overview, preset }: { overview: ProjectOverview; 
         />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {overview.projects.map((row) => (
-          <ProjectCard key={row.project.id} row={row} />
+        {overview?.projects?.map((row) => (
+          <ProjectCard key={row?.project?.id ?? Math.random()} row={row} />
         ))}
-        {(overview.unassigned.revenue.amount !== 0 || overview.unassigned.cost.amount !== 0) && (
+        {Boolean(overview?.unassigned?.revenue?.amount || overview?.unassigned?.cost?.amount) && (
           <div className="flex flex-col gap-2 rounded-xl border border-dashed border-border p-4">
             <p className="text-sm font-medium">Not assigned to a project</p>
             <p className="text-xs text-muted-foreground">Tag these to see the full picture per project.</p>

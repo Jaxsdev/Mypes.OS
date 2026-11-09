@@ -89,14 +89,16 @@ export function InboxView({
   status: InboxStatus;
 }) {
   const router = useRouter();
-  const summary = inbox.summary;
-  const total = Object.values(summary).reduce((sum, value) => sum + value, 0);
+  const summary = inbox?.summary ?? { all: 0, drafts: 0, uncategorized: 0 };
+  const total = Object.values(summary).reduce((sum, value) => sum + (typeof value === "number" ? value : 0), 0);
   const showDrafts = status === "open" && (show === "all" || show === "drafts");
   const showUncategorized = status === "open" && (show === "all" || show === "uncategorized");
+  const items = inbox?.items ?? [];
+  const drafts = inbox?.drafts ?? [];
   const groups = KIND_GROUPS.filter((group) => show === "all" || SHOW_GROUPS[show] === group.id)
-    .map((group) => ({ ...group, items: inbox.items.filter((item) => group.kinds.includes(item.kind)) }))
+    .map((group) => ({ ...group, items: items.filter((item) => group.kinds.includes(item.kind)) }))
     .filter((group) => group.items.length);
-  const nothingHere = !groups.length && (!showDrafts || !inbox.drafts.length) && (!showUncategorized || !uncategorized?.items.length);
+  const nothingHere = !groups.length && (!showDrafts || !drafts.length) && (!showUncategorized || !uncategorized?.items?.length);
 
   return (
     <div className="flex flex-col gap-4">

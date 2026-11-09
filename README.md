@@ -18,7 +18,56 @@
 Captura (OCR) ➔ Conecta (Bancos/Billeteras) ➔ Comprende (IA & Métricas) ➔ Actúa (Reportes & PLE)
 ```
 
-[✨ Características](#-características-principales) • [🏗️ Arquitectura](#%EF%B8%8F-arquitectura-del-sistema) • [🚀 Inicio Rápido](#-inicio-rápido) • [🐳 Docker](#-despliegue-con-docker) • [📖 Documentación API](#-microservicio-python-ai-engine)
+[✨ Características](#-características-principales) • [📸 Vistas](#-galería-de-vistas-mypesos) • [🏗️ Arquitectura](#%EF%B8%8F-arquitectura-del-sistema) • [🚀 Inicio Rápido](#-inicio-rápido) • [🐳 Docker](#-despliegue-con-docker) • [📖 Documentación API](#-microservicio-python-ai-engine)
+
+</div>
+
+---
+
+## 📸 Galería de Vistas MypesOS
+
+Explore las pantallas clave diseñadas y adaptadas para la realidad financiera y operativa de las micro y pequeñas empresas peruanas:
+
+<div align="center">
+
+### 1. Panel Principal MYPE (`/`)
+*Consolidación en tiempo real de posición de caja en Soles (PEN 26.6K), flujo de caja operativo (+58.1%), saldos en cuentas BCP, billeteras digitales Yape/Plin, caja chica en efectivo y acceso directo al Scoring de Microfinanzas.*
+![Panel Principal MYPE](docs/assets/dashboard.png)
+
+<br/>
+
+| 2. Transacciones con Validación IA (`/transactions`) | 3. Saldos de Cuentas & Billeteras (`/accounts`) |
+| :---: | :---: |
+| *Libro contable inmutable de ingresos y egresos. Cada movimiento registra confianza de categorización IA (95% - 99%), comprobantes vinculados y cuenta bancaria de origen.* | *Arqueo de caja y cuentas corrientes: BCP Soles, Yape Negocio, Plin y Caja Chica física para control riguroso de movimientos diarios.* |
+| ![Transacciones](docs/assets/transactions.png) | ![Cuentas](docs/assets/accounts.png) |
+
+<br/>
+
+| 4. Proyectos & Rentabilidad Comercial (`/business/projects`) | 5. Análisis & Margen Operativo (`/ai/insights`) |
+| :---: | :---: |
+| *Control por centros de costo y campañas (ej. Campaña Navideña 2026). Monitorea presupuesto utilizado (41.3%), gasto mensual y meses de liquidez restante.* | *Visión comparativa semestral de ingresos vs gastos, margen neto del 58.1% y detección temprana de desviaciones financieras.* |
+| ![Proyectos y Campañas](docs/assets/projects.png) | ![Insights](docs/assets/insights.png) |
+
+<br/>
+
+| 6. Patrimonio Neto MYPE (`/wealth/net-worth`) | 7. Metas Financieras & Fondos de Reserva (`/goals`) |
+| :---: | :---: |
+| *Cálculo patrimonial estricto (Activos: S/ 30,010 - Pasivos: S/ 0). Evolución mensual (+20.4%) y desglose de cuentas bancarias y facturas por cobrar.* | *Planes de ahorro para capital de trabajo y contingencias. Progreso continuo (53% de S/ 50,000) con ritmo mensual sugerido.* |
+| ![Patrimonio Neto](docs/assets/net-worth.png) | ![Metas de ahorro](docs/assets/goals.png) |
+
+<br/>
+
+| 8. Planificación & Costos Fijos (`/subscriptions`) | 9. Buzón Inteligente IA con Supervisión (`/ai/inbox`) |
+| :---: | :---: |
+| *Seguimiento de compromisos recurrentes (servicios de software, alquileres y suministros) proyectados a 30 días para evitar quiebres de caja.* | *Bandeja de confirmación humana: los borradores extraídos por OCR o transferencias bancarias requieren aprobación explícita antes de asentarse.* |
+| ![Planificación y Suscripciones](docs/assets/subscriptions.png) | ![Buzón IA](docs/assets/ai-inbox.png) |
+
+<br/>
+
+| 10. Perfil de Negocio & Seguridad (`/settings`) |
+| :---: |
+| *Administración de credenciales, autenticación segura y configuración de identidad corporativa MYPE.* |
+| ![Configuración y Perfil](docs/assets/profile.png) |
 
 </div>
 
@@ -92,6 +141,12 @@ flowchart TD
 - **Tasa de Quema (*Net Burn Rate*):** Indicador continuo de la velocidad de consumo de capital y días de liquidez restante (*runway*).
 - **Proyectos & Rentabilidad:** Costos directos, ingresos por cliente y seguimiento de nómina mensual con comprobantes.
 
+### 🏦 5. Score de Salud Financiera & Simulador de Microcrédito (Inclusión Financiera)
+- **Scoring Crediticio Alternativo:** Algoritmo en Python que evalúa 4 dimensiones de riesgo sobre el libro mayor contable (Margen operativo, Estabilidad de ingresos, Cobertura de compromisos fijos y Días de liquidez de caja).
+- **Precalificación y Clasificación (A/B/C/D):** Estimación inmediata del monto prudencial para microcrédito y plazo sugerido.
+- **Simulador Interactivo de Cuotas:** Proyección en tiempo real bajo amortización francesa con semáforo de capacidad de pago contra el excedente operativo mensual libre.
+- **Documentación Metodológica:** Consulta el diseño completo en [docs/ARQUITECTURA_MICROFINANZAS.md](docs/ARQUITECTURA_MICROFINANZAS.md).
+
 ---
 
 ## 🚀 Inicio Rápido
@@ -120,6 +175,19 @@ pnpm db:migrate
 
 ### Ejecución en Modo Desarrollo
 
+#### Opción 1: Modo Demo Rápido (Sin Docker ni dependencias externas)
+```bash
+# Inicia el servidor de datos mock y la web en paralelo
+pnpm mock    # En terminal 1 (Puerto 4100)
+pnpm web     # En terminal 2 (Puerto 3100)
+
+# O en Windows ejecuta directamente:
+.\iniciar-demo.ps1
+
+# Ingreso directo: http://localhost:3100/demo
+```
+
+#### Opción 2: Pila Completa (PostgreSQL + Python Engine + NestJS + Next.js)
 ```bash
 # Inicia la API (puerto 4100) y la Web (puerto 3100) en paralelo
 pnpm dev

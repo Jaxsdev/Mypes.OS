@@ -8,6 +8,8 @@ import { RateLimit } from "../system/rate-limit.js";
 import { AnalyticsService } from "./analytics.service.js";
 import { OverviewService } from "./overview.service.js";
 import { ReportsService } from "./reports.service.js";
+import { TaxBooksService } from "./tax-books.service.js";
+import { CreditScoringService } from "./credit-scoring.service.js";
 
 const rangeQuery = z.object({
   from: dayString.optional(),
@@ -87,7 +89,45 @@ export class AnalyticsController {
 @Controller("reports")
 @WorkspaceScoped()
 export class ReportsController {
-  constructor(@Inject(ReportsService) private readonly reports: ReportsService) {}
+  constructor(
+    @Inject(ReportsService) private readonly reports: ReportsService,
+    @Inject(TaxBooksService) private readonly taxBooks: TaxBooksService,
+    @Inject(CreditScoringService) private readonly creditScoring: CreditScoringService,
+  ) {}
+
+  /** Genera el Libro Electrónico (PLE) para MYPES mediante el motor Python */
+  @Get("tax-book")
+  taxBook(
+    @Ctx() ctx: WorkspaceContext,
+    @Query("period") period: string,
+    @Query("type") type: "sales" | "purchases",
+  ) {
+    return this.taxBooks.generateTaxBook(ctx, {
+      period: period || new Date().toISOString().slice(0, 7).replace("-", ""),
+      type: type || "sales",
+    });
+  }
+
+  /** Evalúa la salud financiera y precalificación crediticia para microfinanzas */
+  @Get("credit-score")
+  creditScore(@Ctx() ctx: WorkspaceContext) {
+    return this.creditScoring.evaluateWorkspaceCredit(ctx);
+  }
+
+  /** Simula cuotas de microcrédito y capacidad de servicio de deuda */
+  @Get("loan-simulation")
+  loanSimulation(
+    @Ctx() ctx: WorkspaceContext,
+    @Query("amount") amount?: string,
+    @Query("term") term?: string,
+    @Query("rate") rate?: string,
+  ) {
+    return this.creditScoring.simulateWorkspaceLoan(ctx, {
+      requestedAmount: amount ? Number.parseFloat(amount) : 10000,
+      termMonths: term ? Number.parseInt(term, 10) : 12,
+      monthlyInterestRate: rate ? Number.parseFloat(rate) : 0.025,
+    });
+  }
 
   @Get()
   list(@Ctx() ctx: WorkspaceContext) {
